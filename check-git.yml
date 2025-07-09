@@ -1,0 +1,13 @@
+---
+- name: Check if git is installed
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Check git
+      ansible.builtin.shell: which git
+      register: git_path
+      ignore_errors: yes
+
+    - name: Print result
+      ansible.builtin.debug:
+        var: git_path.stdout
