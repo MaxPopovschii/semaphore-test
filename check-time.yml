@@ -1,0 +1,12 @@
+---
+- name: Show system uptime
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Uptime
+      ansible.builtin.shell: uptime
+      register: result
+
+    - name: Print uptime
+      ansible.builtin.debug:
+        var: result.stdout
