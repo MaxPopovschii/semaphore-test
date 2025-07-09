@@ -13,7 +13,7 @@
     - name: Salva il JSON in un file
       ansible.builtin.copy:
         dest: ~/github_api.json
-        content: "{{ github_api.content }}"
+        content: "{{ github_api.content | default(github_api.json | to_nice_json) }}"
 
     - name: Estrai alcune informazioni dal JSON
       ansible.builtin.set_fact:
