@@ -1,0 +1,34 @@
+---
+- name: Report ambiente e file
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Elenca i file nella directory corrente
+      ansible.builtin.shell: ls -lh
+      register: ls_output
+
+    - name: Mostra i file trovati
+      ansible.builtin.debug:
+        var: ls_output.stdout_lines
+
+    - name: Leggi variabili d'ambiente (PATH, USER, HOME)
+      ansible.builtin.shell: |
+        echo "PATH=$PATH"
+        echo "USER=$USER"
+        echo "HOME=$HOME"
+      register: env_output
+
+    - name: Mostra variabili d'ambiente
+      ansible.builtin.debug:
+        var: env_output.stdout_lines
+
+    - name: Scrivi un report nella home dell'utente
+      ansible.builtin.copy:
+        dest: ~/semaphore_report.txt
+        content: |
+          === FILES ===
+          {{ ls_output.stdout }}
+
+          === ENV ===
+          {{ env_output.stdout }}
