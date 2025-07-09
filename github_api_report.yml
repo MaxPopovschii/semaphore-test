@@ -13,12 +13,16 @@
     - name: Salva il JSON in un file
       ansible.builtin.copy:
         dest: ~/github_api.json
-        content: "{{ github_api.content | default(github_api.json | to_nice_json) }}"
+        content: "{{ github_api.content }}"
+
+    - name: Fai il parsing del JSON
+      ansible.builtin.set_fact:
+        github_api_parsed: "{{ github_api.content | from_json }}"
 
     - name: Estrai alcune informazioni dal JSON
       ansible.builtin.set_fact:
-        current_user_url: "{{ github_api.json.current_user_url }}"
-        emojis_url: "{{ github_api.json.emojis_url }}"
+        current_user_url: "{{ github_api_parsed.current_user_url }}"
+        emojis_url: "{{ github_api_parsed.emojis_url }}"
 
     - name: Mostra le informazioni estratte
       ansible.builtin.debug:
