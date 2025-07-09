@@ -11,28 +11,30 @@
       register: github_api
 
     - name: Salva il JSON in un file
-      ansible.builtin.copy:
+      copy:
         dest: ~/github_api.json
-        content: "{{ github_api.content }}"
+        content: "{{ github_api.content | default('') }}"
 
-    - name: Fai il parsing del JSON
-      ansible.builtin.set_fact:
+    - name: Fai parsing del JSON solo se possibile
+      set_fact:
         github_api_parsed: "{{ github_api.content | from_json }}"
+      when: github_api.content is defined
 
-    - name: Estrai alcune informazioni dal JSON
-      ansible.builtin.set_fact:
-        current_user_url: "{{ github_api_parsed.current_user_url }}"
-        emojis_url: "{{ github_api_parsed.emojis_url }}"
+    - name: Estrai info solo se parsing riuscito
+      set_fact:
+        current_user_url: "{{ github_api_parsed.current_user_url | default('N/A') }}"
+        emojis_url: "{{ github_api_parsed.emojis_url | default('N/A') }}"
+      when: github_api_parsed is defined
 
     - name: Mostra le informazioni estratte
-      ansible.builtin.debug:
+      debug:
         msg: |
-          URL utente corrente: {{ current_user_url }}
-          URL emoji: {{ emojis_url }}
+          URL utente corrente: {{ current_user_url | default('N/A') }}
+          URL emoji: {{ emojis_url | default('N/A') }}
 
     - name: Crea un report riassuntivo
-      ansible.builtin.copy:
+      copy:
         dest: ~/github_api_report.txt
         content: |
-          URL utente corrente: {{ current_user_url }}
-          URL emoji: {{ emojis_url }}
+          URL utente corrente: {{ current_user_url | default('N/A') }}
+          URL emoji: {{ emojis_url | default('N/A') }}
