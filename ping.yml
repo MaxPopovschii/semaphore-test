@@ -1,0 +1,7 @@
+---
+- name: Ping localhost
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Ping localhost
+      ansible.builtin.ping:
