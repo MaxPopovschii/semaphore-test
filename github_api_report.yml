@@ -1,0 +1,34 @@
+---
+- name: Scarica dati da GitHub API e crea un report
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Scarica dati pubblici da GitHub API
+      ansible.builtin.uri:
+        url: https://api.github.com
+        return_content: yes
+      register: github_api
+
+    - name: Salva il JSON in un file
+      ansible.builtin.copy:
+        dest: ~/github_api.json
+        content: "{{ github_api.content }}"
+
+    - name: Estrai alcune informazioni dal JSON
+      ansible.builtin.set_fact:
+        current_user_url: "{{ github_api.json.current_user_url }}"
+        emojis_url: "{{ github_api.json.emojis_url }}"
+
+    - name: Mostra le informazioni estratte
+      ansible.builtin.debug:
+        msg: |
+          URL utente corrente: {{ current_user_url }}
+          URL emoji: {{ emojis_url }}
+
+    - name: Crea un report riassuntivo
+      ansible.builtin.copy:
+        dest: ~/github_api_report.txt
+        content: |
+          URL utente corrente: {{ current_user_url }}
+          URL emoji: {{ emojis_url }}
