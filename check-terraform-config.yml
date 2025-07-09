@@ -1,0 +1,13 @@
+---
+- name: Check Terraform configuration
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Terraform init
+      ansible.builtin.shell: terraform init -input=false
+
+    - name: Terraform fmt check
+      ansible.builtin.shell: terraform fmt -check
+
+    - name: Terraform validate
+      ansible.builtin.shell: terraform validate
