@@ -1,0 +1,13 @@
+---
+- name: Check if /etc/hosts exists
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Stat /etc/hosts
+      ansible.builtin.stat:
+        path: /etc/hosts
+      register: hosts_file
+
+    - name: Show result
+      ansible.builtin.debug:
+        var: hosts_file.stat.exists
